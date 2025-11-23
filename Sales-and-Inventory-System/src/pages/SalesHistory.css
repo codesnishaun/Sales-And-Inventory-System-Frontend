@@ -1,0 +1,199 @@
+.sales-history {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.sales-history-header {
+  margin-bottom: 30px;
+}
+
+.sales-history-header h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0 0 8px 0;
+}
+
+.sales-history-header p {
+  color: #64748b;
+  font-size: 1.1rem;
+  margin: 0;
+}
+
+.sales-history-container {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  padding: 24px;
+  min-height: 400px;
+}
+
+.empty-history {
+  text-align: center;
+  padding: 80px 20px;
+  color: #94a3b8;
+}
+
+.empty-icon {
+  font-size: 4rem;
+  margin-bottom: 20px;
+}
+
+.empty-history h2 {
+  font-size: 1.5rem;
+  color: #64748b;
+  margin: 0 0 12px 0;
+}
+
+.empty-history p {
+  font-size: 1rem;
+  margin: 0;
+}
+
+.sales-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.sale-card {
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 20px;
+  transition: all 0.2s;
+  background: #f8fafc;
+}
+
+.sale-card:hover {
+  border-color: #3b82f6;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.1);
+}
+
+.sale-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid #e2e8f0;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.sale-info h3 {
+  margin: 0 0 8px 0;
+  color: #1e293b;
+  font-size: 1.3rem;
+}
+
+.sale-date {
+  color: #64748b;
+  font-size: 0.9rem;
+  margin: 0 0 8px 0;
+}
+
+.sale-customer {
+  color: #334155;
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+.sale-total {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.total-label {
+  color: #64748b;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.total-amount {
+  color: #10b981;
+  font-size: 1.8rem;
+  font-weight: 700;
+}
+
+.sale-items {
+  margin-bottom: 16px;
+}
+
+.sale-items h4 {
+  margin: 0 0 12px 0;
+  color: #334155;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.items-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sale-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 12px;
+  background: white;
+  border-radius: 6px;
+  border: 1px solid #e2e8f0;
+}
+
+.item-name {
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.item-details {
+  color: #64748b;
+  font-size: 0.9rem;
+}
+
+.sale-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 16px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.btn-delete {
+  background-color: #ef4444;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-delete:hover {
+  background-color: #dc2626;
+}
+
+@media (max-width: 768px) {
+  .sales-history-header h1 {
+    font-size: 2rem;
+  }
+  
+  .sale-header {
+    flex-direction: column;
+  }
+  
+  .sale-total {
+    align-items: flex-start;
+  }
+  
+  .sale-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+}
+
