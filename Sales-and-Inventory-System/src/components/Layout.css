@@ -1,12 +1,13 @@
 .layout {
   display: flex;
   min-height: 100vh;
-  background-color: #f5f7fa;
+  background-color: #f7efe8;
+  background-image: radial-gradient(circle at top, rgba(255, 255, 255, 0.8), transparent 60%);
 }
 
 .sidebar {
   width: 260px;
-  background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+  background: linear-gradient(180deg, #4d2b1f 0%, #2c1a12 100%);
   color: white;
   padding: 0;
   box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
@@ -16,7 +17,7 @@
 }
 
 .sidebar-header {
-  padding: 24px 20px;
+  padding: 24px 20px 16px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
@@ -25,6 +26,12 @@
   font-size: 1.5rem;
   font-weight: 700;
   color: white;
+}
+
+.sidebar-header p {
+  margin: 8px 0 0;
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.8);
 }
 
 .sidebar-nav {
@@ -42,15 +49,15 @@
 }
 
 .nav-item:hover {
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(255, 255, 255, 0.12);
   color: white;
-  border-left-color: #3b82f6;
+  border-left-color: #f5b375;
 }
 
 .nav-item.active {
-  background-color: rgba(59, 130, 246, 0.2);
+  background-color: rgba(245, 179, 117, 0.25);
   color: white;
-  border-left-color: #3b82f6;
+  border-left-color: #f5b375;
   font-weight: 600;
 }
 
@@ -66,6 +73,7 @@
   margin-left: 260px;
   padding: 30px;
   min-height: 100vh;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.8), rgba(247, 239, 232, 0.95));
 }
 
 @media (max-width: 768px) {

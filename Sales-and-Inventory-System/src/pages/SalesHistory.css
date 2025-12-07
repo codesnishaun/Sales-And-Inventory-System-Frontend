@@ -10,28 +10,29 @@
 .sales-history-header h1 {
   font-size: 2.5rem;
   font-weight: 700;
-  color: #1e293b;
+  color: #3d271a;
   margin: 0 0 8px 0;
 }
 
 .sales-history-header p {
-  color: #64748b;
+  color: #8a5e3b;
   font-size: 1.1rem;
   margin: 0;
 }
 
 .sales-history-container {
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  background: #fffaf6;
+  border-radius: 16px;
+  box-shadow: 0 12px 30px rgba(64, 34, 19, 0.12);
   padding: 24px;
   min-height: 400px;
+  border: 1px solid rgba(64, 34, 19, 0.08);
 }
 
 .empty-history {
   text-align: center;
   padding: 80px 20px;
-  color: #94a3b8;
+  color: #b08666;
 }
 
 .empty-icon {
@@ -57,16 +58,16 @@
 }
 
 .sale-card {
-  border: 2px solid #e2e8f0;
+  border: 2px solid #f0d9c8;
   border-radius: 12px;
   padding: 20px;
   transition: all 0.2s;
-  background: #f8fafc;
+  background: #fdf3eb;
 }
 
 .sale-card:hover {
-  border-color: #3b82f6;
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.1);
+  border-color: #cf8451;
+  box-shadow: 0 10px 20px rgba(64, 34, 19, 0.15);
 }
 
 .sale-header {
@@ -82,18 +83,18 @@
 
 .sale-info h3 {
   margin: 0 0 8px 0;
-  color: #1e293b;
+  color: #3d271a;
   font-size: 1.3rem;
 }
 
 .sale-date {
-  color: #64748b;
+  color: #8a5e3b;
   font-size: 0.9rem;
   margin: 0 0 8px 0;
 }
 
 .sale-customer {
-  color: #334155;
+  color: #4b2c20;
   font-size: 0.95rem;
   margin: 0;
 }
@@ -106,14 +107,14 @@
 }
 
 .total-label {
-  color: #64748b;
+  color: #8a5e3b;
   font-size: 0.85rem;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
 
 .total-amount {
-  color: #10b981;
+  color: #047857;
   font-size: 1.8rem;
   font-weight: 700;
 }
@@ -142,16 +143,16 @@
   padding: 10px 12px;
   background: white;
   border-radius: 6px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid #f0d9c8;
 }
 
 .item-name {
   font-weight: 600;
-  color: #1e293b;
+  color: #3d271a;
 }
 
 .item-details {
-  color: #64748b;
+  color: #815a41;
   font-size: 0.9rem;
 }
 
@@ -159,7 +160,7 @@
   display: flex;
   justify-content: flex-end;
   padding-top: 16px;
-  border-top: 1px solid #e2e8f0;
+  border-top: 1px solid #f0d9c8;
 }
 
 .btn-delete {

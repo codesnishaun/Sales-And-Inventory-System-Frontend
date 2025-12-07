@@ -10,12 +10,12 @@
 .dashboard-header h1 {
   font-size: 2.5rem;
   font-weight: 700;
-  color: #1e293b;
+  color: #402213;
   margin: 0 0 8px 0;
 }
 
 .dashboard-header p {
-  color: #64748b;
+  color: #815a41;
   font-size: 1.1rem;
   margin: 0;
 }
@@ -28,19 +28,20 @@
 }
 
 .stat-card {
-  background: white;
-  border-radius: 12px;
+  background: #fffaf6;
+  border-radius: 16px;
   padding: 24px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 12px 30px rgba(64, 34, 19, 0.12);
   display: flex;
   align-items: center;
   gap: 20px;
   transition: transform 0.2s, box-shadow 0.2s;
+  border: 1px solid rgba(64, 34, 19, 0.08);
 }
 
 .stat-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 16px 32px rgba(64, 34, 19, 0.18);
 }
 
 .stat-icon {
@@ -57,19 +58,19 @@
 .stat-content h3 {
   font-size: 2rem;
   font-weight: 700;
-  color: #1e293b;
+  color: #3d271a;
   margin: 0 0 4px 0;
 }
 
 .stat-content p {
-  color: #64748b;
+  color: #815a41;
   font-size: 0.95rem;
   margin: 0;
 }
 
 .dashboard-footer {
   text-align: center;
-  color: #94a3b8;
+  color: #977157;
   font-size: 0.9rem;
   margin-top: 40px;
 }

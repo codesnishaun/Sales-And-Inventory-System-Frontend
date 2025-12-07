@@ -1,13 +1,26 @@
+import { useState } from 'react';
 import { useApp } from '../context/AppContext';
+import ConfirmationDialog from '../components/ConfirmationDialog';
 import './SalesHistory.css';
 
 const SalesHistory = () => {
   const { sales, deleteSale } = useApp();
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const [confirmConfig, setConfirmConfig] = useState({ title: '', message: '', onConfirm: () => {} });
 
   const handleDelete = (id) => {
-    if (window.confirm('Are you sure you want to delete this sale record?')) {
-      deleteSale(id);
-    }
+    const sale = sales.find(s => s.id === id);
+    setConfirmConfig({
+      title: 'Delete Sale Record',
+      message: `Are you sure you want to delete sale #${id} for ${sale?.customerName}? This action cannot be undone.`,
+      onConfirm: () => {
+        deleteSale(id);
+        setIsConfirmOpen(false);
+      },
+      type: 'danger',
+      confirmText: 'Delete',
+    });
+    setIsConfirmOpen(true);
   };
 
   const formatDate = (dateString) => {
@@ -24,16 +37,16 @@ const SalesHistory = () => {
   return (
     <div className="sales-history">
       <div className="sales-history-header">
-        <h1>Sales History</h1>
-        <p>View all completed sales transactions</p>
+        <h1>Sales Log</h1>
+        <p>Review every sales.</p>
       </div>
 
       <div className="sales-history-container">
         {sales.length === 0 ? (
           <div className="empty-history">
-            <div className="empty-icon">📋</div>
-            <h2>No Sales Yet</h2>
-            <p>Your sales history will appear here once you complete your first sale.</p>
+            <div className="empty-icon">🍔</div>
+            <h2>No Orders Yet</h2>
+            <p>Sales log is empty.</p>
           </div>
         ) : (
           <div className="sales-list">
@@ -49,7 +62,7 @@ const SalesHistory = () => {
                   </div>
                   <div className="sale-total">
                     <span className="total-label">Total</span>
-                    <span className="total-amount">${sale.total.toFixed(2)}</span>
+                    <span className="total-amount">₱{sale.total.toFixed(2)}</span>
                   </div>
                 </div>
                 <div className="sale-items">
@@ -59,7 +72,7 @@ const SalesHistory = () => {
                       <div key={index} className="sale-item">
                         <span className="item-name">{item.productName}</span>
                         <span className="item-details">
-                          {item.quantity} × ${item.price.toFixed(2)} = ${item.subtotal.toFixed(2)}
+                          {item.quantity} × ₱{item.price.toFixed(2)} = ₱{item.subtotal.toFixed(2)}
                         </span>
                       </div>
                     ))}
@@ -78,6 +91,18 @@ const SalesHistory = () => {
           </div>
         )}
       </div>
+
+      {/* Confirmation Dialog */}
+      <ConfirmationDialog
+        isOpen={isConfirmOpen}
+        onClose={() => setIsConfirmOpen(false)}
+        onConfirm={confirmConfig.onConfirm}
+        title={confirmConfig.title}
+        message={confirmConfig.message}
+        confirmText={confirmConfig.confirmText || 'Confirm'}
+        cancelText={confirmConfig.cancelText || 'Cancel'}
+        type={confirmConfig.type || 'default'}
+      />
     </div>
   );
 };

@@ -1,37 +1,37 @@
 import { useState } from 'react';
 import { useApp } from '../context/AppContext';
+import ConfirmationDialog from '../components/ConfirmationDialog';
 import './Inventory.css';
 
 const Inventory = () => {
-  const { products, addProduct, updateProduct, deleteProduct } = useApp();
+  const { supplies, addSupply, updateSupply, deleteSupply } = useApp();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingProduct, setEditingProduct] = useState(null);
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const [confirmConfig, setConfirmConfig] = useState({ title: '', message: '', onConfirm: () => {} });
+  const [editingSupply, setEditingSupply] = useState(null);
   const [formData, setFormData] = useState({
     name: '',
-    price: '',
     stock: '',
+    unit: '',
     category: '',
-    sku: '',
   });
 
-  const handleOpenModal = (product = null) => {
-    if (product) {
-      setEditingProduct(product);
+  const handleOpenModal = (supply = null) => {
+    if (supply) {
+      setEditingSupply(supply);
       setFormData({
-        name: product.name,
-        price: product.price.toString(),
-        stock: product.stock.toString(),
-        category: product.category,
-        sku: product.sku,
+        name: supply.name,
+        stock: supply.stock.toString(),
+        unit: supply.unit || '',
+        category: supply.category || '',
       });
     } else {
-      setEditingProduct(null);
+      setEditingSupply(null);
       setFormData({
         name: '',
-        price: '',
         stock: '',
+        unit: '',
         category: '',
-        sku: '',
       });
     }
     setIsModalOpen(true);
@@ -39,38 +39,45 @@ const Inventory = () => {
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
-    setEditingProduct(null);
+    setEditingSupply(null);
     setFormData({
       name: '',
-      price: '',
       stock: '',
+      unit: '',
       category: '',
-      sku: '',
     });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const productData = {
+    const supplyData = {
       name: formData.name,
-      price: parseFloat(formData.price),
-      stock: parseInt(formData.stock),
+      stock: parseFloat(formData.stock),
+      unit: formData.unit,
       category: formData.category,
-      sku: formData.sku,
     };
 
-    if (editingProduct) {
-      updateProduct(editingProduct.id, productData);
+    if (editingSupply) {
+      updateSupply(editingSupply.id, supplyData);
     } else {
-      addProduct(productData);
+      addSupply(supplyData);
     }
     handleCloseModal();
   };
 
   const handleDelete = (id) => {
-    if (window.confirm('Are you sure you want to delete this product?')) {
-      deleteProduct(id);
-    }
+    const supply = supplies.find(s => s.id === id);
+    setConfirmConfig({
+      title: 'Delete Supply',
+      message: `Are you sure you want to delete "${supply?.name}"? This action cannot be undone.`,
+      onConfirm: () => {
+        deleteSupply(id);
+        setIsConfirmOpen(false);
+      },
+      type: 'danger',
+      confirmText: 'Delete',
+    });
+    setIsConfirmOpen(true);
   };
 
   const getStockStatus = (stock) => {
@@ -83,11 +90,11 @@ const Inventory = () => {
     <div className="inventory">
       <div className="inventory-header">
         <div>
-          <h1>Inventory Management</h1>
-          <p>Manage your products and stock levels</p>
+          <h1>Inventory</h1>
+          <p>Keep supplies ready for service.</p>
         </div>
         <button className="btn-primary" onClick={() => handleOpenModal()}>
-          + Add Product
+          + Add Supply
         </button>
       </div>
 
@@ -95,50 +102,46 @@ const Inventory = () => {
         <table className="inventory-table">
           <thead>
             <tr>
-              <th>SKU</th>
-              <th>Product Name</th>
+              <th>Supply Name</th>
               <th>Category</th>
-              <th>Price</th>
               <th>Stock</th>
+              <th>Unit</th>
               <th>Status</th>
-              <th>Total Value</th>
               <th>Actions</th>
             </tr>
           </thead>
           <tbody>
-            {products.length === 0 ? (
+            {supplies.length === 0 ? (
               <tr>
-                <td colSpan="8" className="empty-state">
-                  No products found. Add your first product!
+                <td colSpan="6" className="empty-state">
+                  No supplies yet.
                 </td>
               </tr>
             ) : (
-              products.map((product) => {
-                const stockStatus = getStockStatus(product.stock);
+              supplies.map((supply) => {
+                const stockStatus = getStockStatus(supply.stock);
                 return (
-                  <tr key={product.id}>
-                    <td>{product.sku}</td>
-                    <td className="product-name">{product.name}</td>
-                    <td>{product.category}</td>
-                    <td>${product.price.toFixed(2)}</td>
-                    <td>{product.stock}</td>
+                  <tr key={supply.id}>
+                    <td className="product-name">{supply.name}</td>
+                    <td>{supply.category || '-'}</td>
+                    <td>{supply.stock}</td>
+                    <td>{supply.unit || 'units'}</td>
                     <td>
                       <span className={`stock-badge ${stockStatus.class}`}>
                         {stockStatus.label}
                       </span>
                     </td>
-                    <td>${(product.price * product.stock).toFixed(2)}</td>
                     <td>
                       <div className="action-buttons">
                         <button
                           className="btn-edit"
-                          onClick={() => handleOpenModal(product)}
+                          onClick={() => handleOpenModal(supply)}
                         >
                           Edit
                         </button>
                         <button
                           className="btn-delete"
-                          onClick={() => handleDelete(product.id)}
+                          onClick={() => handleDelete(supply.id)}
                         >
                           Delete
                         </button>
@@ -156,60 +159,52 @@ const Inventory = () => {
         <div className="modal-overlay" onClick={handleCloseModal}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
-              <h2>{editingProduct ? 'Edit Product' : 'Add New Product'}</h2>
+              <h2>{editingSupply ? 'Edit Supply' : 'Add New Supply'}</h2>
               <button className="modal-close" onClick={handleCloseModal}>
                 ×
               </button>
             </div>
             <form onSubmit={handleSubmit} className="product-form">
               <div className="form-group">
-                <label>Product Name *</label>
+                <label>Supply Name *</label>
                 <input
                   type="text"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   required
-                />
-              </div>
-              <div className="form-group">
-                <label>SKU *</label>
-                <input
-                  type="text"
-                  value={formData.sku}
-                  onChange={(e) => setFormData({ ...formData, sku: e.target.value })}
-                  required
+                  placeholder="e.g., Coffee Beans, Milk"
                 />
               </div>
               <div className="form-row">
                 <div className="form-group">
-                  <label>Price ($) *</label>
+                  <label>Stock *</label>
                   <input
                     type="number"
                     step="0.01"
                     min="0"
-                    value={formData.price}
-                    onChange={(e) => setFormData({ ...formData, price: e.target.value })}
-                    required
-                  />
-                </div>
-                <div className="form-group">
-                  <label>Stock *</label>
-                  <input
-                    type="number"
-                    min="0"
                     value={formData.stock}
                     onChange={(e) => setFormData({ ...formData, stock: e.target.value })}
                     required
+                    placeholder="0"
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Unit</label>
+                  <input
+                    type="text"
+                    value={formData.unit}
+                    onChange={(e) => setFormData({ ...formData, unit: e.target.value })}
+                    placeholder="e.g., kg, L, pieces"
                   />
                 </div>
               </div>
               <div className="form-group">
-                <label>Category *</label>
+                <label>Category</label>
                 <input
                   type="text"
                   value={formData.category}
                   onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                  required
+                  placeholder="e.g., Raw Materials, Dairy"
                 />
               </div>
               <div className="form-actions">
@@ -217,13 +212,25 @@ const Inventory = () => {
                   Cancel
                 </button>
                 <button type="submit" className="btn-primary">
-                  {editingProduct ? 'Update' : 'Add'} Product
+                  {editingSupply ? 'Update' : 'Add'} Supply
                 </button>
               </div>
             </form>
           </div>
         </div>
       )}
+
+      {/* Confirmation Dialog */}
+      <ConfirmationDialog
+        isOpen={isConfirmOpen}
+        onClose={() => setIsConfirmOpen(false)}
+        onConfirm={confirmConfig.onConfirm}
+        title={confirmConfig.title}
+        message={confirmConfig.message}
+        confirmText={confirmConfig.confirmText || 'Confirm'}
+        cancelText={confirmConfig.cancelText || 'Cancel'}
+        type={confirmConfig.type || 'default'}
+      />
     </div>
   );
 };

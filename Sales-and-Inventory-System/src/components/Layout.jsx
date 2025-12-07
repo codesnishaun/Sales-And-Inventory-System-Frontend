@@ -10,7 +10,8 @@ const Layout = ({ children }) => {
     <div className="layout">
       <aside className="sidebar">
         <div className="sidebar-header">
-          <h2>📦 Sales & Inventory</h2>
+          <h2>Tatea Bites</h2>
+          <p>Sales and Inventory System</p>
         </div>
         <nav className="sidebar-nav">
           <Link 
@@ -24,22 +25,22 @@ const Layout = ({ children }) => {
             to="/inventory" 
             className={`nav-item ${isActive('/inventory') ? 'active' : ''}`}
           >
-            <span className="nav-icon">📦</span>
+            <span className="nav-icon">🫘</span>
             <span>Inventory</span>
           </Link>
           <Link 
             to="/sales" 
             className={`nav-item ${isActive('/sales') ? 'active' : ''}`}
           >
-            <span className="nav-icon">💰</span>
+            <span className="nav-icon">🥐</span>
             <span>Sales</span>
           </Link>
           <Link 
             to="/sales/history" 
             className={`nav-item ${isActive('/sales/history') ? 'active' : ''}`}
           >
-            <span className="nav-icon">📋</span>
-            <span>Sales History</span>
+            <span className="nav-icon">📔</span>
+            <span>Sales Log</span>
           </Link>
         </nav>
       </aside>
