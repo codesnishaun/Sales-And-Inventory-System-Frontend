@@ -4,12 +4,14 @@ import ConfirmationDialog from '../components/ConfirmationDialog';
 import './Sales.css';
 
 const Sales = () => {
-  const { menuItems, supplies, addSale, addProduct } = useApp();
+  const { menuItems, supplies, addSale, addProduct, deleteProduct } = useApp();
   const [cart, setCart] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState('');
   const [quantity, setQuantity] = useState(1);
   const [customerName, setCustomerName] = useState('');
   const [isAddMenuOpen, setIsAddMenuOpen] = useState(false);
+  const [isManageMenuOpen, setIsManageMenuOpen] = useState(false);
+  const [isEditCartOpen, setIsEditCartOpen] = useState(false);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [confirmConfig, setConfirmConfig] = useState({ title: '', message: '', onConfirm: () => {} });
   const [newMenuForm, setNewMenuForm] = useState({
@@ -102,12 +104,27 @@ const Sales = () => {
   };
 
   const handleRemoveFromCart = (productId) => {
+    const item = cart.find(i => i.productId === productId);
+    setConfirmConfig({
+      title: 'Remove Item',
+      message: `Remove "${item?.productName}" from cart?`,
+      onConfirm: () => {
+        setCart(cart.filter(item => item.productId !== productId));
+        setIsConfirmOpen(false);
+      },
+      type: 'danger',
+      confirmText: 'Remove',
+    });
+    setIsConfirmOpen(true);
+  };
+
+  const handleRemoveFromCartDirect = (productId) => {
     setCart(cart.filter(item => item.productId !== productId));
   };
 
   const handleUpdateQuantity = (productId, newQuantity) => {
     if (newQuantity <= 0) {
-      handleRemoveFromCart(productId);
+      handleRemoveFromCartDirect(productId);
       return;
     }
 
@@ -253,6 +270,38 @@ const Sales = () => {
     setIsConfirmOpen(true);
   };
 
+  const handleDeleteMenuItem = (menuItemId) => {
+    const menuItem = menuItems.find(m => m.id === menuItemId);
+    // Check if item is in cart
+    const inCart = cart.some(item => item.productId === menuItemId);
+    
+    if (inCart) {
+      setConfirmConfig({
+        title: 'Cannot Delete',
+        message: `"${menuItem?.name}" is currently in the cart. Please remove it from the cart first.`,
+        onConfirm: () => setIsConfirmOpen(false),
+      });
+      setIsConfirmOpen(true);
+      return;
+    }
+
+    setConfirmConfig({
+      title: 'Delete Menu Item',
+      message: `Are you sure you want to delete "${menuItem?.name}"? This action cannot be undone.`,
+      onConfirm: () => {
+        deleteProduct(menuItemId);
+        setIsConfirmOpen(false);
+        // Close manage menu if it's open and no items left
+        if (menuItems.length === 1) {
+          setIsManageMenuOpen(false);
+        }
+      },
+      type: 'danger',
+      confirmText: 'Delete',
+    });
+    setIsConfirmOpen(true);
+  };
+
   const total = cart.reduce((sum, item) => sum + item.subtotal, 0);
 
   return (
@@ -262,9 +311,14 @@ const Sales = () => {
           <h1>Create an Order</h1>
           <p>Sales</p>
         </div>
-        <button className="btn-primary" onClick={handleOpenAddMenu}>
-          + Add New Menu
-        </button>
+        <div style={{ display: 'flex', gap: '12px' }}>
+          <button className="btn-secondary" onClick={() => setIsManageMenuOpen(true)}>
+            📋 Manage Menu
+          </button>
+          <button className="btn-primary" onClick={handleOpenAddMenu}>
+            + Add New Menu
+          </button>
+        </div>
       </div>
 
       <div className="sales-container">
@@ -311,7 +365,14 @@ const Sales = () => {
           </div>
 
           <div className="sales-section">
-            <h2>Order Queue ({cart.length})</h2>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+              <h2 style={{ margin: 0 }}>Order Queue ({cart.length})</h2>
+              {cart.length > 0 && (
+                <button className="btn-edit-cart" onClick={() => setIsEditCartOpen(true)}>
+                  ✏️ Edit Cart
+                </button>
+              )}
+            </div>
             {cart.length === 0 ? (
               <div className="empty-cart">
                 <p>No orders</p>
@@ -396,6 +457,124 @@ const Sales = () => {
           </div>
         </div>
       </div>
+
+      {/* Manage Menu Modal */}
+      {isManageMenuOpen && (
+        <div className="modal-overlay" onClick={() => setIsManageMenuOpen(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2>Manage Menu Items</h2>
+              <button className="modal-close" onClick={() => setIsManageMenuOpen(false)}>
+                ×
+              </button>
+            </div>
+            <div className="manage-menu-content">
+              {menuItems.length === 0 ? (
+                <div className="empty-cart">
+                  <p>No menu items yet. Add your first menu item!</p>
+                </div>
+              ) : (
+                <div className="manage-menu-items">
+                  {menuItems.map((menuItem) => {
+                    const inCart = cart.some(item => item.productId === menuItem.id);
+                    const canMake = canMakeMenuItem(menuItem);
+                    return (
+                      <div key={menuItem.id} className="manage-menu-item">
+                        <div className="manage-menu-item-info">
+                          <h4>{menuItem.name}</h4>
+                          <div className="manage-menu-details">
+                            <span>₱{menuItem.price.toFixed(2)}</span>
+                            <span>•</span>
+                            <span>{menuItem.category}</span>
+                            {menuItem.supplyRequirements && menuItem.supplyRequirements.length > 0 && (
+                              <>
+                                <span>•</span>
+                                <span className="supply-info">
+                                  {menuItem.supplyRequirements.length} supply{menuItem.supplyRequirements.length > 1 ? 'ies' : ''}
+                                </span>
+                              </>
+                            )}
+                          </div>
+                          {inCart && (
+                            <span className="in-cart-badge">In Cart</span>
+                          )}
+                          {!canMake && !inCart && (
+                            <span className="low-supply-badge">Low Supplies</span>
+                          )}
+                        </div>
+                        <button
+                          className="btn-delete-menu"
+                          onClick={() => handleDeleteMenuItem(menuItem.id)}
+                          disabled={inCart}
+                          title={inCart ? 'Remove from cart first' : 'Delete menu item'}
+                        >
+                          🗑️ Delete
+                        </button>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+              <div className="manage-menu-actions">
+                <button className="btn-secondary" onClick={() => setIsManageMenuOpen(false)}>
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Cart Modal */}
+      {isEditCartOpen && (
+        <div className="modal-overlay" onClick={() => setIsEditCartOpen(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2>Edit Cart</h2>
+              <button className="modal-close" onClick={() => setIsEditCartOpen(false)}>
+                ×
+              </button>
+            </div>
+            <div className="edit-cart-content">
+              {cart.length === 0 ? (
+                <div className="empty-cart">
+                  <p>Cart is empty</p>
+                </div>
+              ) : (
+                <div className="edit-cart-items">
+                  {cart.map((item) => {
+                    const product = menuItems.find(p => p.id === item.productId);
+                    return (
+                      <div key={item.productId} className="edit-cart-item">
+                        <div className="edit-cart-item-info">
+                          <h4>{item.productName}</h4>
+                          <p>Quantity: {item.quantity} × ₱{item.price.toFixed(2)} = ₱{item.subtotal.toFixed(2)}</p>
+                        </div>
+                        <button
+                          className="btn-remove-item"
+                          onClick={() => {
+                            handleRemoveFromCartDirect(item.productId);
+                            if (cart.length === 1) {
+                              setIsEditCartOpen(false);
+                            }
+                          }}
+                        >
+                          🗑️ Remove
+                        </button>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+              <div className="edit-cart-actions">
+                <button className="btn-secondary" onClick={() => setIsEditCartOpen(false)}>
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Add New Menu Modal */}
       {isAddMenuOpen && (

@@ -1,0 +1,42 @@
+erDiagram
+    SUPPLIES {
+        int id PK
+        string name
+        float stock
+        string unit
+        string category
+    }
+    
+    MENU_ITEMS {
+        int id PK
+        string name
+        float price
+        string category
+        array supplyRequirements
+    }
+    
+    SUPPLY_REQUIREMENTS {
+        int supplyId FK
+        float quantityPerOrder
+    }
+    
+    SALES {
+        int id PK
+        string customerName
+        float total
+        datetime date
+    }
+    
+    SALE_ITEMS {
+        int productId FK
+        string productName
+        float price
+        int quantity
+        float subtotal
+    }
+    
+    SUPPLIES ||--o{ SUPPLY_REQUIREMENTS : "used in"
+    MENU_ITEMS ||--o{ SUPPLY_REQUIREMENTS : "requires"
+    MENU_ITEMS ||--o{ SALE_ITEMS : "sold as"
+    SALES ||--o{ SALE_ITEMS : "contains"
+

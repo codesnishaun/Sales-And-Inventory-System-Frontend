@@ -1,0 +1,44 @@
+flowchart TD
+    Staff[Staff/User]
+    Customer[Customer]
+    
+    subgraph System["Sales and Inventory System"]
+        P1[1.0 Manage Inventory]
+        P2[2.0 Manage Menu Items]
+        P3[3.0 Process Sales Order]
+        P4[4.0 Complete Sale]
+        P5[5.0 Generate Reports]
+        
+        D1[(SUPPLIES)]
+        D2[(MENU_ITEMS)]
+        D3[(SALES)]
+    end
+    
+    Staff -->|Supply Info| P1
+    P1 -->|Update| D1
+    D1 -->|Read| P1
+    P1 -->|Display| Staff
+    
+    Staff -->|Menu Item Info| P2
+    P2 -->|Update| D2
+    D2 -->|Read| P2
+    D1 -->|Validate| P2
+    P2 -->|Display| Staff
+    
+    Customer -->|Order Request| P3
+    P3 -->|Read| D2
+    P3 -->|Check Availability| D1
+    D2 -->|Available Products| P3
+    D1 -->|Stock Status| P3
+    P3 -->|Cart Items| P4
+    
+    P4 -->|Create Sale| D3
+    P4 -->|Deduct Stock| D1
+    P4 -->|Read Requirements| D2
+    P4 -->|Confirmation| Customer
+    
+    D3 -->|Read| P5
+    D2 -->|Read| P5
+    D1 -->|Read| P5
+    P5 -->|Reports| Staff
+

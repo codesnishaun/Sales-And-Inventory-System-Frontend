@@ -1,0 +1,52 @@
+flowchart TD
+    Staff[Staff/User]
+    Customer[Customer]
+    
+    subgraph System["Sales and Inventory System"]
+        subgraph Inventory["Inventory Management"]
+            P1[1.0 Manage Inventory<br/>- Add Supply<br/>- Update Supply<br/>- Delete Supply<br/>- Check Stock]
+        end
+        
+        subgraph Menu["Menu Management"]
+            P2[2.0 Manage Menu Items<br/>- Add Menu Item<br/>- Update Menu Item<br/>- Delete Menu Item<br/>- Link Supplies]
+        end
+        
+        subgraph Sales["Sales Processing"]
+            P3[3.0 Process Sales Order<br/>- Select Items<br/>- Add to Cart<br/>- Check Availability<br/>- Validate Quantities]
+            P4[4.0 Complete Sale<br/>- Create Sale Record<br/>- Deduct Supplies<br/>- Calculate Total<br/>- Update Inventory]
+        end
+        
+        subgraph Reports["Reporting"]
+            P5[5.0 Generate Reports<br/>- Calculate Revenue<br/>- Count Sales<br/>- Check Low Stock<br/>- Display History]
+        end
+        
+        D1[(D1: SUPPLIES<br/>- id<br/>- name<br/>- stock<br/>- unit<br/>- category)]
+        D2[(D2: MENU_ITEMS<br/>- id<br/>- name<br/>- price<br/>- category<br/>- supplyRequirements)]
+        D3[(D3: SALES<br/>- id<br/>- customerName<br/>- items<br/>- total<br/>- date)]
+    end
+    
+    Staff -->|Supply Info| P1
+    P1 <-->|Read/Write| D1
+    P1 -->|Inventory Display| Staff
+    
+    Staff -->|Menu Item Info| P2
+    P2 <-->|Read/Write| D2
+    P2 -->|Read| D1
+    P2 -->|Menu Display| Staff
+    
+    Customer -->|Order Request| P3
+    P3 -->|Read| D2
+    P3 -->|Check Stock| D1
+    P3 -->|Cart Items| P4
+    
+    P4 -->|Create| D3
+    P4 -->|Deduct| D1
+    P4 -->|Read Requirements| D2
+    P4 -->|Order Confirmation| Customer
+    
+    D3 -->|Read| P5
+    D2 -->|Read| P5
+    D1 -->|Read| P5
+    P5 -->|Dashboard Reports| Staff
+    P5 -->|Sales History| Staff
+

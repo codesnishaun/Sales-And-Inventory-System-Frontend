@@ -1,0 +1,10 @@
+flowchart LR
+    Staff[Staff/User]
+    Customer[Customer]
+    
+    System["Sales and Inventory System"]
+    
+    Staff <-->|Supply Data<br/>Inventory Info| System
+    Staff <-->|Sales Reports| System
+    Customer <-->|Customer Info<br/>Order Details| System
+
